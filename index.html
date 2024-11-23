@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Validation</title>
+    <script src="http://code.jquery.com/jquery-3.5.1.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 130%;
+        }
+
+        .wrapper {
+            width: 550px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .formelement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        label {
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        input {
+            width: 320px;
+            font-size: 25px;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 5px 5px 12px 5px;
+            transition: all 0.3s ease;
+        }
+
+        input.highlight {
+            border: 2px solid black;
+            color: white;
+            background-color: black;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        .error, .valid {
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .valid {
+            color: green;
+        }
+
+        .message {
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .failure {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="formelement">
+            <label for="Email">Email</label>
+            <input type="text" id="Email" name="Email">
+            <span id="emailMessage" class="error"></span>
+        </div>
+        <div class="formelement">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+        </div>
+        <div class="formelement">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword">
+        </div>
+        <div class="formelement">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="text" id="phoneNumber" name="phoneNumber">
+            <span id="phoneMessage" class="error"></span>
+        </div>
+        <div class="formelement">
+            <button type="button" id="submitbutton">Submit</button>
+        </div>
+        <div id="formMessage" class="message"></div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#submitbutton').click(function() {
+                let errormessage = '';
+                let successMessage = '';
+                const projectName = "Form Validation Project";
+
+                const email = $('#Email').val();
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmPassword').val();
+                const phoneNumber = $('#phoneNumber').val();
+
+                $('#emailMessage').text('');
+                $('#phoneMessage').text('');
+                $('#formMessage').text('');
+
+                if (!email || !password || !confirmPassword || !phoneNumber) {
+                    errormessage += "<p>All fields are required.</p>";
+                } else {
+                    if (!validateEmail(email)) {
+                        $('#emailMessage').text("Email is invalid.");
+                    } else {
+                        $('#emailMessage').text("Email is valid.").removeClass('error').addClass('valid');
+                    }
+
+                    if (!/^\d{10}$/.test(phoneNumber)) {
+                        $('#phoneMessage').text("Phone number must contain exactly 10 digits.");
+                    }
+
+                    if (password !== confirmPassword) {
+                        errormessage += "<p>Password and Confirm Password do not match.</p>";
+                    }
+                }
+
+                if (errormessage) {
+                    $('#formMessage').html(errormessage).removeClass('success').addClass('failure');
+                } else {
+                    successMessage = projectName + ": Form submitted successfully.";
+                    $('#formMessage').html(successMessage).removeClass('failure').addClass('success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                }
+            });
+
+            $('input').focus(function() {
+                $(this).addClass('highlight');
+            }).blur(function() {
+                $(this).removeClass('highlight');
+            });
+
+            const validateEmail = (email) => {
+                return String(email)
+                    .toLowerCase()
+                    .match(
+                        /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                    );
+            };
+        });
+    </script>
+</body>
+</html>
